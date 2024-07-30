@@ -11,7 +11,7 @@ This isn't considered a mod, it doesn't modify the VRChat client in any way.  Th
 2) Open steam, go to library and right click on VRChat.  Go to Manage->Browse Local Files
 3) Unzip ImageSwapper.zip and place files into the local files folder
 4) Open config.ini in a text editor and place the path of your photos directory.
--  The photo that gets pick can be a folder within the root folder, for example if you set it to C:\Pictures it might pull a picture from C:\Pictures\ThisIsASubFolder.  You can exclude subfolders using the "exclude" option in the same way.
+-  The photo that gets picked can be a folder within the root folder, for example if you set it to C:\Pictures it might pull a picture from C:\Pictures\ThisIsASubFolder.  You can exclude subfolders using the "exclude" option in the same way.
    EX: photos = C:\Users\user\Pictures\VRChat
 - You can append more directories by using + between them.  Example: C:\Users\user\Pictures\VRChat+C:\Users\user\Pictures\Skebs
 6) (Optional) Go ahead and run ImageSwapper.exe once manually by double clicking.  The process technically runs after EAC is launched so the image will change on the *next* run.  Running the ImageSwapper.exe manually just insures that the first run is a new image.
