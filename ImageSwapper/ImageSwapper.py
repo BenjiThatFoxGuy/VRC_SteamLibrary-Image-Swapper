@@ -54,7 +54,7 @@ def GenerateConfig():
     config_file_exists = run_bat_exists = True
 
     direct_from_file = False
-    if (path.exists(path.join(getcwd(), path.basename(__file__)))):
+    if (path.exists(path.join(getcwd(), path.basename(__file__)))) or path.exists(path.join(getcwd(), 'ImageSwapper.exe')):
         direct_from_file = True
 
     #Generate new config
@@ -63,16 +63,17 @@ def GenerateConfig():
         look_for = 'EasyAntiCheat'
         found = False
         actual_path = ""
-        for f in listdir(getcwd()):
+        root_dir = getcwd() if not direct_from_file else path.join(getcwd(), pardir)
+        for f in listdir(root_dir):
             if f == look_for:
                 found = True
-                actual_path = path.join(getcwd(), f)
+                actual_path = path.join(root_dir, f)
                 break
         if not found:
-            for f in listdir(path.join(getcwd(), pardir)):
+            for f in listdir(path.join(root_dir, pardir)):
                 if f == look_for:
                     found = True
-                    actual_path = path.join(getcwd(), pardir, f)
+                    actual_path = path.join(root_dir, pardir, f)
                     break
             if not found:
                 print("Configuration was unable to find the EAC location, you will need to manually update this in the config.ini.", True)
@@ -85,7 +86,8 @@ def GenerateConfig():
             config.add_section(section)
         for option in options:
             config.set(option[0], option[1], option[2])
-        with open('config.ini', 'w') as configfile:
+        fname = 'config.ini' if direct_from_file else 'ImageSwapper\\config.ini'
+        with open(fname, 'w') as configfile:
             config.write(configfile)
         print('Add ImageSwapper\\run.bat %COMMAND% to your launch options in Steam then add your actual launch options AFTER', True)
         print("Open config.ini and input your photo path and EAC path (if needed)\n", True)
@@ -94,7 +96,9 @@ def GenerateConfig():
         print("run.bat is missing, this will be generated automatically.", True)
         run_bat_exists = False
         commands = "@echo off\nstart ImageSwapper\ImageSwapper.exe\n%*"
-        with open('run.bat', 'w') as bfile:
+
+        fname = 'run.bat' if direct_from_file else 'ImageSwapper\\run.bat'
+        with open(fname, 'w') as bfile:
             bfile.write(commands)
 
     if not run_bat_exists or not config_file_exists:

@@ -1,3 +1,3 @@
 @echo off
-start imageswapper.exe
+start ImageSwapper\ImageSwapper.exe
 %*

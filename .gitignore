@@ -1,7 +1,7 @@
-build.bat
-SplashScreen.png
+*.bat
+*.ini
 scaled.png
-config.ini
+EasyAntiCheat/
 __pycache__
 build
 dist
@@ -11,5 +11,6 @@ dist
 *-workspace
 Test Images
 build_env/
-pyinstaller-5.3
+pyinstaller-*
 test.py
+Backup/
