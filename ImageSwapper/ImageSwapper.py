@@ -8,9 +8,16 @@ from traceback import print_exc
 from PIL import Image
 from packaging import version
 
+def isDirectFromFile():
+    direct_from_file = False
+    if (path.exists(path.join(getcwd(), path.basename(__file__)))) or path.exists(path.join(getcwd(), 'ImageSwapper.exe')):
+        direct_from_file = True
+    return direct_from_file
+
 def print(value, force=False):
     config = ConfigParser()
-    config.read('config.ini')
+    fname = 'config.ini' if isDirectFromFile() else 'ImageSwapper\\config.ini'
+    config.read(fname)
     if config.get('OPTIONS', 'output_to_cmd').lower() == 'true' or force:
         stdout.write(f'{value}\n')
 
@@ -24,7 +31,7 @@ def CheckForUpdates():
         latest = response.url.split('/')[-1].replace('v', '')
         if version.parse(current_version) < version.parse(latest):
             print("\nUpdate Available! Download from \nhttps://github.com/synlogic/EAC-Image-Swapper/releases/latest (Copy Paste into Browser)\n", True)
-            input("Press any key to continue..")
+            input("Press enter key to continue..")
     except Exception:
         print_exc()
         print('Checking for updates failed...', True)
@@ -53,9 +60,7 @@ def GenerateConfig():
 
     config_file_exists = run_bat_exists = True
 
-    direct_from_file = False
-    if (path.exists(path.join(getcwd(), path.basename(__file__)))) or path.exists(path.join(getcwd(), 'ImageSwapper.exe')):
-        direct_from_file = True
+    direct_from_file = isDirectFromFile()
 
     #Generate new config
     if (not path.exists('ImageSwapper\config.ini') and not direct_from_file) or (direct_from_file and not path.exists('config.ini')):
@@ -77,7 +82,7 @@ def GenerateConfig():
                     break
             if not found:
                 print("Configuration was unable to find the EAC location, you will need to manually update this in the config.ini.", True)
-                input("Press any key to exit...")
+                input("Press enter key to exit...")
                 exit()
         else:
             options[2] = ['PATH', 'EasyAntiCheat', actual_path]
@@ -95,7 +100,7 @@ def GenerateConfig():
     if (not path.exists('ImageSwapper\run.bat') and not direct_from_file) or (direct_from_file and not path.exists('run.bat')):
         print("run.bat is missing, this will be generated automatically.", True)
         run_bat_exists = False
-        commands = "@echo off\nstart ImageSwapper\ImageSwapper.exe\n%*"
+        commands = f"@echo off\nset root=./ImageSwapper/\ncd %root%\nstart ImageSwapper.exe\n%*"
 
         fname = 'run.bat' if direct_from_file else 'ImageSwapper\\run.bat'
         with open(fname, 'w') as bfile:
@@ -103,12 +108,13 @@ def GenerateConfig():
 
     if not run_bat_exists or not config_file_exists:
         #print(f"Config file exists={config_file_exists}, Run.bat exists={run_bat_exists}", True)
-        input("\nPress any key to exit...")
+        input("\nPress enter key to exit...")
         exit()   
 
     # Generate missing options
-    elif path.exists('config.ini'):
-        config.read('config.ini')
+    elif (path.exists('ImageSwapper\config.ini') and not direct_from_file) or (direct_from_file and path.exists('config.ini')):
+        fname = 'config.ini' if isDirectFromFile() else 'ImageSwapper\\config.ini'
+        config.read(fname)
         for option in options:
             if config.has_option(option[0], option[1]):
                 config.set(option[0], option[1], config.get(option[0], option[1]))
@@ -120,7 +126,7 @@ def GenerateConfig():
             config.write(configfile)
 
     if config.get('PATH', 'photos') == "":
-        input("Open config.ini and input your VRChat photo path and VRChat EAC path | Press any key to exit.")
+        input("Open config.ini and input your VRChat photo path and VRChat EAC path | Press enter key to exit.")
         exit()
     return config
 
@@ -155,7 +161,7 @@ def run():
         new_photo = choice(photos)
     except IndexError:
         print('No photos to be found! Empty photos directory maybe?', True)
-        input("Press any key to exit.")
+        input("Press enter key to exit.")
         exit()
 
     scaled = Resize(new_photo)
@@ -163,12 +169,12 @@ def run():
     scaled.save(f'{ eac_path }\\SplashScreen.png')
     if config.get('OPTIONS', 'pause_on_complete').lower() == 'true':
         print("Image successfully scaled and replaced.", True)
-        input("Pause on Complete enabled in config.ini, press any key to exit")
+        input("Pause on Complete enabled in config.ini, Press enter key to exit")
 
 if __name__ == '__main__':
     try:
         run()
     except Exception as e:
         print_exc()
-        input("Something went wrong, press any key to exit..")
+        input("Something went wrong, Press enter key to exit..")
         exit()
