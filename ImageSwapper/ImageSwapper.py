@@ -144,7 +144,9 @@ def GetPhotosInDirectory(dir):
         print(photos)
         return photos
     for file in listdir(dir):
-        if (file.lower().endswith('.png') or file.lower().endswith('.jpg')) and not file.lower().endswith('_vr.jpg') and not file == last_used:
+        if (file.lower().endswith('.png') or file.lower().endswith('.jpg')) and not file.lower().endswith('_vr.jpg'):
+            if file == last_used:
+                continue
             path_ = dir + '\\' + file
             print(f'     - {file}')
             photos.append(path_)
@@ -159,14 +161,16 @@ def run():
     for path_ in paths:
         glob_pattern = path.join(path_, '*')
         photos = photos + GetPhotosInDirectory(path_)
-        if len(photos) <= 1:
-            print("Only one photo is available to pick from.  Exiting early to save time.", True)
-            return
         files = sorted(glob(glob_pattern), key=path.getctime)
         for file in files:
             if path.isdir(file) and not file in exclusions:
                 photos = photos + GetPhotosInDirectory(file)
     try:
+        if len(photos) <= 1:
+            print("Only one photo is available to pick from.  Exiting early to save time.", True)
+            if config.get('OPTIONS', 'pause_on_complete').lower() == 'true':
+                input("Pause on Complete enabled in config.ini, Press enter key to exit")
+            
         new_photo = choice(photos)
     except IndexError:
         print('No photos to be found! Empty photos directory maybe?', True)
