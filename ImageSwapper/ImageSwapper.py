@@ -158,6 +158,8 @@ def run():
     for path_ in paths:
         glob_pattern = path.join(path_, '*')
         photos = photos + GetPhotosInDirectory(path_)
+        if len(photos) <= 1:
+            return
         files = sorted(glob(glob_pattern), key=path.getctime)
         for file in files:
             if path.isdir(file) and not file in exclusions:
