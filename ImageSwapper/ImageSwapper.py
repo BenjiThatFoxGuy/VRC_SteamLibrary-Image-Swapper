@@ -4,7 +4,7 @@ from sys import exit, stdout
 from glob import glob
 from requests import get as rget
 from configparser import ConfigParser
-from traceback import print_exc
+from traceback import print_exc, format_exc
 from PIL import Image
 from packaging import version
 
@@ -127,9 +127,10 @@ def getLastUsedPhoto():
     return photo_path
 
 def saveLastUsedPhoto(photo_path):
+    print("Saving last used photo", True)
     with open('last_used.txt', 'w') as f:
         f.write(photo_path)
-
+    
 def GetPhotosInDirectory(dir):
     print(f'Finding files in {dir}')
     last_used = getLastUsedPhoto()
@@ -159,6 +160,7 @@ def run():
         glob_pattern = path.join(path_, '*')
         photos = photos + GetPhotosInDirectory(path_)
         if len(photos) <= 1:
+            print("Only one photo is available to pick from.  Exiting early to save time.", True)
             return
         files = sorted(glob(glob_pattern), key=path.getctime)
         for file in files:
@@ -170,7 +172,10 @@ def run():
         print('No photos to be found! Empty photos directory maybe?', True)
         input("Press enter key to exit.")
         exit()
+    except:
+        print(format_exc(), True)
 
+    saveLastUsedPhoto(path.basename(new_photo))
     scaled = Resize(new_photo)
     eac_path = config.get('PATH', 'EasyAntiCheat')
     scaled.save(f'{ eac_path }\\SplashScreen.png')
@@ -182,6 +187,6 @@ if __name__ == '__main__':
     try:
         run()
     except Exception as e:
-        print_exc()
+        print(format_exc(), True)
         input("Something went wrong, Press enter key to exit..")
         exit()
