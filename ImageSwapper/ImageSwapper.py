@@ -127,7 +127,7 @@ def getLastUsedPhoto():
     return photo_path
 
 def saveLastUsedPhoto(photo_path):
-    print("Saving last used photo", True)
+    print("Saving last used photo")
     with open('last_used.txt', 'w') as f:
         f.write(photo_path)
     
