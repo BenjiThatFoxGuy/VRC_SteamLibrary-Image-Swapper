@@ -119,15 +119,31 @@ def GenerateConfig():
         exit()
     return config
 
+def getLastUsedPhoto():
+    photo_path = None
+    if path.exists('last_used.txt'):
+        with open('last_used.txt') as f:
+            photo_path = f.read().strip()
+    return photo_path
+
+def saveLastUsedPhoto(photo_path):
+    with open('last_used.txt', 'w') as f:
+        f.write(photo_path)
+
 def GetPhotosInDirectory(dir):
     print(f'Finding files in {dir}')
+    last_used = getLastUsedPhoto()
     photos = []
     if not path.isdir(dir) and ((dir.lower().endswith('.png') or dir.lower().endswith('.jpg')) and not dir.lower().endswith('_vr.jpg')):
         photos.append(dir)
+        try:
+            photos.remove(last_used)
+        except ValueError:
+            pass
         print(photos)
         return photos
     for file in listdir(dir):
-        if (file.lower().endswith('.png') or file.lower().endswith('.jpg')) and not file.lower().endswith('_vr.jpg'):
+        if (file.lower().endswith('.png') or file.lower().endswith('.jpg')) and not file.lower().endswith('_vr.jpg') and not file == last_used:
             path_ = dir + '\\' + file
             print(f'     - {file}')
             photos.append(path_)
