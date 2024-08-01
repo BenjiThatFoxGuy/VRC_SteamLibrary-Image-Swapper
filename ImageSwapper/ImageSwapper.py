@@ -8,16 +8,9 @@ from traceback import print_exc
 from PIL import Image
 from packaging import version
 
-def isDirectFromFile():
-    direct_from_file = False
-    if (path.exists(path.join(getcwd(), path.basename(__file__)))) or path.exists(path.join(getcwd(), 'ImageSwapper.exe')):
-        direct_from_file = True
-    return direct_from_file
-
 def print(value, force=False):
     config = ConfigParser()
-    fname = 'config.ini' if isDirectFromFile() else 'ImageSwapper\\config.ini'
-    config.read(fname)
+    config.read('config.ini')
     if config.get('OPTIONS', 'output_to_cmd').lower() == 'true' or force:
         stdout.write(f'{value}\n')
 
@@ -60,15 +53,14 @@ def GenerateConfig():
 
     config_file_exists = run_bat_exists = True
 
-    direct_from_file = isDirectFromFile()
 
     #Generate new config
-    if (not path.exists('ImageSwapper\config.ini') and not direct_from_file) or (direct_from_file and not path.exists('config.ini')):
+    if (not path.exists('config.ini')):
         config_file_exists = False
         look_for = 'EasyAntiCheat'
         found = False
         actual_path = ""
-        root_dir = getcwd() if not direct_from_file else path.join(getcwd(), pardir)
+        root_dir = path.join(getcwd(), pardir)
         for f in listdir(root_dir):
             if f == look_for:
                 found = True
@@ -91,19 +83,17 @@ def GenerateConfig():
             config.add_section(section)
         for option in options:
             config.set(option[0], option[1], option[2])
-        fname = 'config.ini' if direct_from_file else 'ImageSwapper\\config.ini'
-        with open(fname, 'w') as configfile:
+        with open('config.ini', 'w') as configfile:
             config.write(configfile)
         print('Add ImageSwapper\\run.bat %COMMAND% to your launch options in Steam then add your actual launch options AFTER', True)
         print("Open config.ini and input your photo path and EAC path (if needed)\n", True)
         
-    if (not path.exists('ImageSwapper\run.bat') and not direct_from_file) or (direct_from_file and not path.exists('run.bat')):
+    if not path.exists('run.bat'):
         print("run.bat is missing, this will be generated automatically.", True)
         run_bat_exists = False
         commands = f"@echo off\nset root=./ImageSwapper/\ncd %root%\nstart ImageSwapper.exe\n%*"
 
-        fname = 'run.bat' if direct_from_file else 'ImageSwapper\\run.bat'
-        with open(fname, 'w') as bfile:
+        with open('run.bat', 'w') as bfile:
             bfile.write(commands)
 
     if not run_bat_exists or not config_file_exists:
@@ -112,9 +102,8 @@ def GenerateConfig():
         exit()   
 
     # Generate missing options
-    elif (path.exists('ImageSwapper\config.ini') and not direct_from_file) or (direct_from_file and path.exists('config.ini')):
-        fname = 'config.ini' if isDirectFromFile() else 'ImageSwapper\\config.ini'
-        config.read(fname)
+    elif path.exists('config.ini'):
+        config.read('config.ini')
         for option in options:
             if config.has_option(option[0], option[1]):
                 config.set(option[0], option[1], config.get(option[0], option[1]))
