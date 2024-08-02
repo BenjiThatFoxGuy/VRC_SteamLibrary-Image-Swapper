@@ -15,7 +15,7 @@ def print(value, force=False):
         stdout.write(f'{value}\n')
 
 def CheckForUpdates():
-    current_version = "3.0.0"
+    current_version = "3.0.1"
     print(f"EAC Image Swapper version: {current_version}", True)
     print("Checking for updates | You can disable this in config.ini", True)
     
@@ -74,8 +74,6 @@ def GenerateConfig():
                     break
             if not found:
                 print("Configuration was unable to find the EAC location, you will need to manually update this in the config.ini.", True)
-                input("Press enter key to exit...")
-                exit()
         else:
             options[2] = ['PATH', 'EasyAntiCheat', actual_path]
 

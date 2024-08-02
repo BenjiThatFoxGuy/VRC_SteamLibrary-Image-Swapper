@@ -14,4 +14,4 @@ build_env/
 pyinstaller-*
 test.py
 Backup/
-ImageSwapper/last_used.txt
+last_used.txt
