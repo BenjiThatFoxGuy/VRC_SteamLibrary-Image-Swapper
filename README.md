@@ -24,8 +24,7 @@ This is not mod, it does not modify the VRChat (or any other game) client in any
 - Ensure all launch options are **AFTER** the %COMMAND% with a space in between.  Example: ImageSwapper\run.bat %COMMAND% --this-is-an-option=True
 8) Run the game and enjoy seeing your screenshots, skebs, or whatever else on your EAC splash screen!
 
-# Video Tutorial (Deprecated as of v3.0.0, new video coming soon)
-
+# Video Tutorial
 
 <video src="https://github.com/user-attachments/assets/9ee4a18a-dc67-4c0f-a299-4c28ee895990"></video>
 
