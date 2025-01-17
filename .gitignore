@@ -14,4 +14,4 @@ build_env/
 pyinstaller-*
 test.py
 Backup/
-last_used.txt
+last_used_library.txt
